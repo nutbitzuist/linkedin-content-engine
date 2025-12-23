@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  ChevronLeft, 
-  ChevronRight, 
+import {
+  ChevronLeft,
+  ChevronRight,
   Plus,
   Clock,
   MoreVertical,
@@ -16,27 +16,27 @@ import { format, startOfWeek, addDays, addWeeks, subWeeks, isSameDay, isToday } 
 
 // Mock scheduled posts
 const mockPosts = [
-  { 
-    id: '1', 
-    title: 'The biggest mistake I made starting out was thinking I needed to be perfect...', 
+  {
+    id: '1',
+    title: 'The biggest mistake I made starting out was thinking I needed to be perfect...',
     scheduledAt: new Date(Date.now() + 86400000 + 32400000), // Tomorrow 9am
     status: 'scheduled' as const
   },
-  { 
-    id: '2', 
-    title: '5 things I wish someone told me about building in public...', 
+  {
+    id: '2',
+    title: '5 things I wish someone told me about building in public...',
     scheduledAt: new Date(Date.now() + 172800000 + 43200000), // Day after tomorrow 12pm
     status: 'scheduled' as const
   },
-  { 
-    id: '3', 
-    title: 'Why your morning routine doesn\'t matter (and what does)...', 
+  {
+    id: '3',
+    title: 'Why your morning routine doesn\'t matter (and what does)...',
     scheduledAt: new Date(Date.now() + 259200000 + 32400000), // 3 days 9am
     status: 'draft' as const
   },
-  { 
-    id: '4', 
-    title: 'I got fired. Best thing that ever happened...', 
+  {
+    id: '4',
+    title: 'I got fired. Best thing that ever happened...',
     scheduledAt: new Date(Date.now() + 345600000 + 61200000), // 4 days 5pm
     status: 'scheduled' as const
   },
@@ -64,10 +64,6 @@ export default function Calendar() {
   const weekStart = startOfWeek(currentDate, { weekStartsOn: 1 }); // Monday
   const days = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
 
-  const getPostsForDay = (date: Date) => {
-    return mockPosts.filter(post => isSameDay(post.scheduledAt, date));
-  };
-
   const getPostsForSlot = (date: Date, time: string) => {
     const [hours] = time.split(':').map(Number);
     return mockPosts.filter(post => {
@@ -86,7 +82,7 @@ export default function Calendar() {
             Plan and schedule your LinkedIn content
           </p>
         </div>
-        
+
         <Link to="/create" className="btn-primary flex items-center gap-2">
           <Plus className="w-4 h-4" />
           Create Post
@@ -113,7 +109,7 @@ export default function Calendar() {
               <ChevronRight className="w-5 h-5" />
             </button>
           </div>
-          
+
           <div className="flex items-center gap-2">
             <button
               onClick={() => setCurrentDate(new Date())}
@@ -153,8 +149,8 @@ export default function Calendar() {
                 Time
               </div>
               {days.map((day) => (
-                <div 
-                  key={day.toISOString()} 
+                <div
+                  key={day.toISOString()}
                   className={clsx(
                     'p-3 text-center border-l border-dark-600',
                     isToday(day) && 'bg-accent/5'
@@ -192,7 +188,7 @@ export default function Calendar() {
                   {days.map((day) => {
                     const posts = getPostsForSlot(day, slot.time);
                     return (
-                      <div 
+                      <div
                         key={`${day.toISOString()}-${slot.time}`}
                         className={clsx(
                           'p-2 border-l border-dark-600/50 min-h-[60px] relative group',
@@ -205,8 +201,8 @@ export default function Calendar() {
                             onClick={() => setSelectedPost(selectedPost === post.id ? null : post.id)}
                             className={clsx(
                               'p-2 rounded-lg text-xs cursor-pointer transition-all mb-1',
-                              post.status === 'scheduled' 
-                                ? 'bg-success/20 border border-success/30 hover:border-success/50' 
+                              post.status === 'scheduled'
+                                ? 'bg-success/20 border border-success/30 hover:border-success/50'
                                 : 'bg-warning/20 border border-warning/30 hover:border-warning/50'
                             )}
                           >
@@ -217,7 +213,7 @@ export default function Calendar() {
                               <Clock className="w-3 h-3" />
                               {format(post.scheduledAt, 'h:mm a')}
                             </div>
-                            
+
                             {/* Post Actions Dropdown */}
                             {selectedPost === post.id && (
                               <div className="absolute right-2 top-full mt-1 z-10 card p-2 min-w-[140px] animate-fade-in">
@@ -241,7 +237,7 @@ export default function Calendar() {
                             )}
                           </div>
                         ))}
-                        
+
                         {/* Add Post Button (on hover) */}
                         {posts.length === 0 && (
                           <Link
@@ -282,7 +278,7 @@ export default function Calendar() {
         <h3 className="font-semibold mb-4">This Week's Posts</h3>
         <div className="space-y-3">
           {mockPosts.map((post) => (
-            <div 
+            <div
               key={post.id}
               className="flex items-center gap-4 p-4 rounded-xl bg-dark-700/50 hover:bg-dark-700 transition-colors"
             >

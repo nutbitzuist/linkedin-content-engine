@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  Search, 
-  Filter, 
-  Zap, 
+import {
+  Search,
+  Zap,
   ArrowRight,
   Copy,
   Eye,
@@ -15,7 +14,7 @@ import {
   Layers
 } from 'lucide-react';
 import { clsx } from 'clsx';
-import { templates, templateCategories, getTemplatesByCategory } from '../lib/templates';
+import { templates, templateCategories } from '../lib/templates';
 import type { Template } from '../types';
 
 const categoryIcons = {
@@ -38,13 +37,13 @@ export default function Templates() {
   const [previewTemplate, setPreviewTemplate] = useState<Template | null>(null);
 
   const filteredTemplates = templates.filter(template => {
-    const matchesSearch = searchQuery === '' || 
+    const matchesSearch = searchQuery === '' ||
       template.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       template.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
       template.bestFor.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
-    
+
     const matchesCategory = selectedCategory === null || template.category === selectedCategory;
-    
+
     return matchesSearch && matchesCategory;
   });
 
@@ -76,14 +75,14 @@ export default function Templates() {
             className="input pl-12"
           />
         </div>
-        
+
         <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
           <button
             onClick={() => setSelectedCategory(null)}
             className={clsx(
               'px-4 py-2.5 rounded-xl font-medium text-sm whitespace-nowrap transition-all',
-              selectedCategory === null 
-                ? 'bg-accent text-dark-900' 
+              selectedCategory === null
+                ? 'bg-accent text-dark-900'
                 : 'bg-dark-700 text-zinc-300 hover:bg-dark-600'
             )}
           >
@@ -97,8 +96,8 @@ export default function Templates() {
                 onClick={() => setSelectedCategory(cat.id)}
                 className={clsx(
                   'px-4 py-2.5 rounded-xl font-medium text-sm whitespace-nowrap transition-all flex items-center gap-2',
-                  selectedCategory === cat.id 
-                    ? 'bg-accent text-dark-900' 
+                  selectedCategory === cat.id
+                    ? 'bg-accent text-dark-900'
                     : 'bg-dark-700 text-zinc-300 hover:bg-dark-600'
                 )}
               >
@@ -138,7 +137,7 @@ export default function Templates() {
                 </div>
                 <span className="text-xs text-zinc-500 capitalize">{template.category}</span>
               </div>
-              
+
               <h3 className="font-semibold text-lg mb-2 group-hover:text-accent transition-colors">
                 {template.name}
               </h3>
@@ -191,7 +190,7 @@ export default function Templates() {
       {/* Preview Modal */}
       {previewTemplate && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div 
+          <div
             className="absolute inset-0 bg-dark-900/80 backdrop-blur-sm"
             onClick={() => setPreviewTemplate(null)}
           />

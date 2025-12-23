@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  FileEdit, 
-  Search, 
-  MoreVertical, 
-  Edit, 
-  Trash2, 
+import {
+  FileEdit,
+  Search,
+  Edit,
+  Trash2,
   Copy,
   Calendar,
   Clock,
@@ -70,7 +69,7 @@ export default function Drafts() {
   const [selectedDrafts, setSelectedDrafts] = useState<string[]>([]);
 
   const filteredDrafts = mockDrafts
-    .filter(draft => 
+    .filter(draft =>
       draft.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       draft.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
       draft.templateName.toLowerCase().includes(searchQuery.toLowerCase())
@@ -83,8 +82,8 @@ export default function Drafts() {
     });
 
   const toggleSelect = (id: string) => {
-    setSelectedDrafts(prev => 
-      prev.includes(id) 
+    setSelectedDrafts(prev =>
+      prev.includes(id)
         ? prev.filter(d => d !== id)
         : [...prev, id]
     );
@@ -125,7 +124,7 @@ export default function Drafts() {
             {mockDrafts.length} drafts waiting for your final touch
           </p>
         </div>
-        
+
         <Link to="/create" className="btn-primary">
           New Draft
         </Link>
@@ -143,7 +142,7 @@ export default function Drafts() {
             className="input pl-12"
           />
         </div>
-        
+
         <div className="flex gap-2">
           <button
             onClick={() => setSortBy(sortBy === 'recent' ? 'oldest' : 'recent')}
@@ -201,9 +200,9 @@ export default function Drafts() {
                 onChange={() => toggleSelect(draft.id)}
                 className="w-4 h-4 mt-1 rounded border-dark-500 bg-dark-700 text-accent focus:ring-accent/20"
               />
-              
+
               <div className="flex-1 min-w-0">
-                <Link 
+                <Link
                   to={`/create?draft=${draft.id}`}
                   className="font-medium hover:text-accent transition-colors line-clamp-1"
                 >

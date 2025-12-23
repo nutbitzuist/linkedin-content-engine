@@ -1,14 +1,12 @@
 import { Outlet, NavLink, useLocation } from 'react-router-dom';
-import { 
-  LayoutDashboard, 
-  FileText, 
-  PenTool, 
-  Calendar as CalendarIcon, 
+import {
+  LayoutDashboard,
+  FileText,
+  PenTool,
+  Calendar as CalendarIcon,
   FileEdit,
   Linkedin,
   Sparkles,
-  Menu,
-  X,
   ChevronLeft,
   ChevronRight
 } from 'lucide-react';
@@ -30,7 +28,7 @@ export default function Layout() {
   return (
     <div className="min-h-screen flex">
       {/* Sidebar */}
-      <aside 
+      <aside
         className={clsx(
           'fixed left-0 top-0 h-full bg-dark-800/95 backdrop-blur-xl border-r border-dark-600 z-40 transition-all duration-300',
           sidebarCollapsed ? 'w-20' : 'w-64'
@@ -56,9 +54,9 @@ export default function Layout() {
         {/* Navigation */}
         <nav className="p-3 space-y-1">
           {navItems.map((item) => {
-            const isActive = location.pathname === item.path || 
+            const isActive = location.pathname === item.path ||
               (item.path === '/create' && location.pathname.startsWith('/create'));
-            
+
             return (
               <NavLink
                 key={item.path}
@@ -79,7 +77,7 @@ export default function Layout() {
 
         {/* LinkedIn Connection Status */}
         <div className="absolute bottom-20 left-0 right-0 px-3">
-          <div 
+          <div
             className={clsx(
               'card p-3',
               sidebarCollapsed && 'flex justify-center'
@@ -118,7 +116,7 @@ export default function Layout() {
       </aside>
 
       {/* Main Content */}
-      <main 
+      <main
         className={clsx(
           'flex-1 transition-all duration-300',
           sidebarCollapsed ? 'ml-20' : 'ml-64'
