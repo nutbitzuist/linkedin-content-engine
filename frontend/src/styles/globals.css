@@ -1,0 +1,164 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-dark-500;
+  }
+  
+  body {
+    @apply bg-dark-900 text-zinc-100 font-sans antialiased;
+    background-image: 
+      radial-gradient(ellipse at top left, rgba(0, 212, 255, 0.05) 0%, transparent 50%),
+      radial-gradient(ellipse at bottom right, rgba(16, 185, 129, 0.03) 0%, transparent 50%);
+    background-attachment: fixed;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    @apply w-2;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-dark-800;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-dark-500 rounded-full;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-dark-400;
+  }
+
+  /* Selection */
+  ::selection {
+    @apply bg-accent/30 text-white;
+  }
+}
+
+@layer components {
+  /* Glass morphism card */
+  .card {
+    @apply bg-dark-800/80 backdrop-blur-xl border border-dark-600 rounded-2xl;
+  }
+  
+  .card-hover {
+    @apply card transition-all duration-300 hover:border-dark-500 hover:bg-dark-700/80;
+  }
+
+  /* Glow button */
+  .btn-primary {
+    @apply px-6 py-3 bg-accent text-dark-900 font-semibold rounded-xl 
+           transition-all duration-300 
+           hover:bg-accent-light hover:shadow-glow
+           active:scale-95
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-none;
+  }
+
+  .btn-secondary {
+    @apply px-6 py-3 bg-dark-600 text-zinc-200 font-medium rounded-xl 
+           border border-dark-500 transition-all duration-300 
+           hover:bg-dark-500 hover:border-dark-400
+           active:scale-95;
+  }
+
+  .btn-ghost {
+    @apply px-4 py-2 text-zinc-400 font-medium rounded-lg 
+           transition-all duration-200 
+           hover:text-zinc-200 hover:bg-dark-700;
+  }
+
+  /* Input styles */
+  .input {
+    @apply w-full px-4 py-3 bg-dark-700 border border-dark-500 rounded-xl
+           text-zinc-100 placeholder-zinc-500
+           transition-all duration-200
+           focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/20;
+  }
+
+  .textarea {
+    @apply input resize-none;
+  }
+
+  /* Badge */
+  .badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium;
+  }
+
+  .badge-accent {
+    @apply badge bg-accent-muted text-accent;
+  }
+
+  .badge-success {
+    @apply badge bg-success-muted text-success;
+  }
+
+  .badge-warning {
+    @apply badge bg-warning-muted text-warning;
+  }
+
+  /* Template card specific */
+  .template-card {
+    @apply card-hover p-6 cursor-pointer;
+  }
+
+  .template-card:hover .template-icon {
+    @apply text-accent scale-110;
+  }
+
+  /* Shimmer loading effect */
+  .shimmer {
+    @apply bg-gradient-to-r from-dark-700 via-dark-600 to-dark-700 bg-[length:200%_100%] animate-shimmer;
+  }
+
+  /* Post preview */
+  .post-preview {
+    @apply bg-white text-zinc-800 rounded-xl p-6 font-sans text-[15px] leading-relaxed;
+  }
+
+  /* Sidebar nav item */
+  .nav-item {
+    @apply flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-400 
+           transition-all duration-200 hover:text-zinc-200 hover:bg-dark-700;
+  }
+
+  .nav-item.active {
+    @apply text-accent bg-accent-muted;
+  }
+
+  /* Tooltip */
+  .tooltip {
+    @apply absolute z-50 px-3 py-2 text-sm bg-dark-600 text-zinc-200 rounded-lg
+           shadow-lg border border-dark-500 whitespace-nowrap
+           opacity-0 invisible transition-all duration-200
+           group-hover:opacity-100 group-hover:visible;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-gradient-to-r from-accent via-accent-light to-success bg-clip-text text-transparent;
+  }
+
+  .border-gradient {
+    border-image: linear-gradient(135deg, theme('colors.accent.DEFAULT'), theme('colors.success.DEFAULT')) 1;
+  }
+
+  /* Stagger animation delays */
+  .stagger-1 { animation-delay: 0.1s; }
+  .stagger-2 { animation-delay: 0.2s; }
+  .stagger-3 { animation-delay: 0.3s; }
+  .stagger-4 { animation-delay: 0.4s; }
+  .stagger-5 { animation-delay: 0.5s; }
+
+  /* Hide scrollbar but allow scroll */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
