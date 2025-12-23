@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { 
-  Sparkles, 
-  Wand2, 
-  RefreshCw, 
-  Copy, 
-  Eye, 
+import {
+  Sparkles,
+  Wand2,
+  RefreshCw,
+  Copy,
+  Eye,
   EyeOff,
   Calendar,
   Send,
@@ -24,6 +24,7 @@ import { clsx } from 'clsx';
 import toast from 'react-hot-toast';
 import { getTemplateById, templates } from '../lib/templates';
 import { useStore } from '../lib/store';
+import { rewriteContent } from '../lib/api';
 import type { Template, ToneStyle, RewriteMode } from '../types';
 
 const toneOptions: { value: ToneStyle; label: string; description: string }[] = [
@@ -46,7 +47,7 @@ export default function Create() {
   const { templateId } = useParams();
   const navigate = useNavigate();
   const { currentDraft, setCurrentDraft, clearDraft } = useStore();
-  
+
   const [content, setContent] = useState(currentDraft.content);
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(
     templateId ? getTemplateById(templateId) || null : null
@@ -91,32 +92,31 @@ export default function Create() {
     }
 
     setIsGenerating(true);
-    
-    // Simulate AI generation (in production, this would call the API)
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    // Generate a mock response based on the mode
-    let rewritten = content;
-    
-    if (selectedMode === 'hook_enhance') {
-      // Add a stronger hook
-      const hooks = [
-        "Here's what nobody tells you:\n\n",
-        "I made a mistake. A big one.\n\n",
-        "Stop doing this immediately:\n\n",
-        "The uncomfortable truth about success:\n\n",
-      ];
-      rewritten = hooks[Math.floor(Math.random() * hooks.length)] + content;
-    } else if (selectedMode === 'length_optimize') {
-      // Trim to optimal length (simplified)
-      if (content.length > 1200) {
-        rewritten = content.substring(0, 1100) + '...\n\nWhat do you think?';
+
+    try {
+      const response = await rewriteContent({
+        content,
+        mode: selectedMode,
+        templatePattern: selectedTemplate?.pattern,
+        templateExample: selectedTemplate?.example,
+        tone: selectedTone,
+        targetLength: selectedMode === 'length_optimize'
+          ? (content.length > 1200 ? 'condense' : 'expand')
+          : undefined,
+      });
+
+      if (response.success && response.data.rewritten) {
+        setGeneratedVersions([response.data.rewritten, ...generatedVersions.slice(0, 2)]);
+        toast.success('Content generated with AI!');
+      } else {
+        toast.error('Failed to generate content');
       }
+    } catch (error) {
+      console.error('AI rewrite error:', error);
+      toast.error(error instanceof Error ? error.message : 'Failed to generate content. Please try again.');
+    } finally {
+      setIsGenerating(false);
     }
-    
-    setGeneratedVersions([rewritten, ...generatedVersions.slice(0, 2)]);
-    toast.success('Content generated!');
-    setIsGenerating(false);
   };
 
   const applyVersion = (version: string) => {
@@ -134,7 +134,7 @@ export default function Create() {
       toast.error('Please select a date and time');
       return;
     }
-    
+
     // In production, this would call the API
     toast.success(`Scheduled for ${scheduleDate} at ${scheduleTime}`);
     setShowScheduleModal(false);
@@ -167,12 +167,12 @@ export default function Create() {
                 )}
               </div>
             </div>
-            
+
             <div className="flex items-center gap-3">
               <button onClick={handleSaveDraft} className="btn-ghost">
                 Save Draft
               </button>
-              <button 
+              <button
                 onClick={() => setShowScheduleModal(true)}
                 className="btn-secondary flex items-center gap-2"
               >
@@ -209,7 +209,7 @@ export default function Create() {
                   showTemplateSelector && 'rotate-180'
                 )} />
               </button>
-              
+
               {showTemplateSelector && (
                 <div className="mt-4 pt-4 border-t border-dark-600 grid grid-cols-2 gap-2 max-h-64 overflow-y-auto">
                   <button
@@ -227,8 +227,8 @@ export default function Create() {
                       onClick={() => { setSelectedTemplate(template); setShowTemplateSelector(false); }}
                       className={clsx(
                         'p-3 rounded-lg text-left text-sm transition-colors',
-                        selectedTemplate?.id === template.id 
-                          ? 'bg-accent text-dark-900' 
+                        selectedTemplate?.id === template.id
+                          ? 'bg-accent text-dark-900'
                           : 'bg-dark-700 hover:bg-dark-600'
                       )}
                     >
@@ -282,8 +282,8 @@ export default function Create() {
                 <textarea
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
-                  placeholder={selectedTemplate 
-                    ? `Start writing using the ${selectedTemplate.name} pattern...` 
+                  placeholder={selectedTemplate
+                    ? `Start writing using the ${selectedTemplate.name} pattern...`
                     : "What's on your mind? Share your story, insight, or lesson..."
                   }
                   className="textarea min-h-[400px] text-base leading-relaxed"
@@ -308,7 +308,7 @@ export default function Create() {
                   </span>
                 </div>
                 <div className="w-32 h-2 bg-dark-600 rounded-full overflow-hidden">
-                  <div 
+                  <div
                     className={clsx(
                       'h-full transition-all',
                       isOptimalLength && 'bg-success',
@@ -433,7 +433,7 @@ export default function Create() {
               {/* Tips */}
               <div className="mt-6 p-4 rounded-xl bg-dark-700/50">
                 <p className="text-xs text-zinc-500">
-                  💡 Tip: Write your raw thoughts first, then use AI to polish and structure them. 
+                  💡 Tip: Write your raw thoughts first, then use AI to polish and structure them.
                   Your authentic voice + proven structure = viral potential.
                 </p>
               </div>
@@ -445,7 +445,7 @@ export default function Create() {
       {/* Schedule Modal */}
       {showScheduleModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div 
+          <div
             className="absolute inset-0 bg-dark-900/80 backdrop-blur-sm"
             onClick={() => setShowScheduleModal(false)}
           />

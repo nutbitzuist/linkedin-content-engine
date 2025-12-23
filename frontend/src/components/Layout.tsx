@@ -1,14 +1,14 @@
-import { Outlet, NavLink, useLocation } from 'react-router-dom';
+import { Outlet, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
   FileText,
   PenTool,
   Calendar as CalendarIcon,
   FileEdit,
-  Linkedin,
   Sparkles,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  LogOut
 } from 'lucide-react';
 import { useStore } from '../lib/store';
 import { clsx } from 'clsx';
@@ -23,7 +23,13 @@ const navItems = [
 
 export default function Layout() {
   const location = useLocation();
-  const { sidebarCollapsed, toggleSidebar } = useStore();
+  const navigate = useNavigate();
+  const { sidebarCollapsed, toggleSidebar, user, logout } = useStore();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
   return (
     <div className="min-h-screen flex">
@@ -75,28 +81,27 @@ export default function Layout() {
           })}
         </nav>
 
-        {/* LinkedIn Connection Status */}
-        <div className="absolute bottom-20 left-0 right-0 px-3">
-          <div
+        {/* User Info & Logout */}
+        <div className="absolute bottom-20 left-0 right-0 px-3 space-y-2">
+          {/* User Email */}
+          {user && !sidebarCollapsed && (
+            <div className="px-3 py-2 text-xs text-zinc-500 truncate">
+              {user.email}
+            </div>
+          )}
+
+          {/* Logout Button */}
+          <button
+            onClick={handleLogout}
             className={clsx(
-              'card p-3',
-              sidebarCollapsed && 'flex justify-center'
+              'w-full flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-400 hover:text-red-400 hover:bg-red-500/10 transition-all',
+              sidebarCollapsed && 'justify-center px-3'
             )}
+            title={sidebarCollapsed ? 'Logout' : undefined}
           >
-            {sidebarCollapsed ? (
-              <Linkedin className="w-5 h-5 text-linkedin" />
-            ) : (
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-linkedin/20 flex items-center justify-center">
-                  <Linkedin className="w-5 h-5 text-linkedin" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium truncate">Connect LinkedIn</p>
-                  <p className="text-xs text-zinc-500">Enable posting</p>
-                </div>
-              </div>
-            )}
-          </div>
+            <LogOut className="w-5 h-5" />
+            {!sidebarCollapsed && <span>Logout</span>}
+          </button>
         </div>
 
         {/* Collapse Toggle */}

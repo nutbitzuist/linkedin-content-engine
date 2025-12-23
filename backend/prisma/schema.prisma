@@ -1,0 +1,58 @@
+// Prisma schema for ContentForge
+// Run `npx prisma migrate dev` to apply migrations
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String   @id @default(cuid())
+  email             String   @unique
+  password          String
+  linkedinConnected Boolean  @default(false)
+  linkedinProfile   Json?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  posts             Post[]
+  drafts            Draft[]
+}
+
+model Post {
+  id              String     @id @default(cuid())
+  content         String
+  templateId      String?
+  status          PostStatus @default(DRAFT)
+  scheduledAt     DateTime?
+  publishedAt     DateTime?
+  linkedinPostId  String?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  
+  userId          String
+  user            User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Draft {
+  id          String   @id @default(cuid())
+  content     String
+  templateId  String?
+  title       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum PostStatus {
+  DRAFT
+  SCHEDULED
+  PUBLISHED
+  FAILED
+}

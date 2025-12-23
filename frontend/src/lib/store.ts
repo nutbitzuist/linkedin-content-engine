@@ -6,6 +6,7 @@ interface AppState {
   // User state
   user: User | null;
   setUser: (user: User | null) => void;
+  logout: () => void;
 
   // Current draft
   currentDraft: {
@@ -40,6 +41,10 @@ export const useStore = create<AppState>()(
       // User state
       user: null,
       setUser: (user) => set({ user }),
+      logout: () => {
+        localStorage.removeItem('contentforge_token');
+        set({ user: null });
+      },
 
       // Current draft
       currentDraft: { content: '' },
