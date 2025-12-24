@@ -8,15 +8,19 @@ import {
   Sparkles,
   ChevronLeft,
   ChevronRight,
-  LogOut
+  LogOut,
+  BarChart3,
+  Lightbulb
 } from 'lucide-react';
 import { useStore } from '../lib/store';
 import { clsx } from 'clsx';
 
 const navItems = [
   { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+  { path: '/analytics', icon: BarChart3, label: 'Analytics' },
   { path: '/templates', icon: FileText, label: 'Templates' },
   { path: '/create', icon: PenTool, label: 'Create Post' },
+  { path: '/ideas', icon: Lightbulb, label: 'Idea Generator' },
   { path: '/calendar', icon: CalendarIcon, label: 'Calendar' },
   { path: '/drafts', icon: FileEdit, label: 'Drafts' },
 ];

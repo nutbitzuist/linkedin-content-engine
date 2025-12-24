@@ -11,31 +11,52 @@ datasource db {
 }
 
 model User {
-  id                String   @id @default(cuid())
-  email             String   @unique
-  password          String
-  linkedinConnected Boolean  @default(false)
-  linkedinProfile   Json?
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  id                   String    @id @default(cuid())
+  email                String    @unique
+  password             String
+  linkedinConnected    Boolean   @default(false)
+  linkedinProfile      Json?
+  linkedinAccessToken  String?
+  linkedinTokenExpiry  DateTime?
+  linkedinPersonUrn    String?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
   
-  posts             Post[]
-  drafts            Draft[]
+  posts                Post[]
+  drafts               Draft[]
+  contentIdeas         ContentIdea[]
 }
 
 model Post {
-  id              String     @id @default(cuid())
+  id              String         @id @default(cuid())
   content         String
   templateId      String?
-  status          PostStatus @default(DRAFT)
+  status          PostStatus     @default(DRAFT)
   scheduledAt     DateTime?
   publishedAt     DateTime?
   linkedinPostId  String?
-  createdAt       DateTime   @default(now())
-  updatedAt       DateTime   @updatedAt
+  publishError    String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
   
   userId          String
-  user            User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  analytics       PostAnalytics?
+}
+
+model PostAnalytics {
+  id           String   @id @default(cuid())
+  postId       String   @unique
+  post         Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  impressions  Int      @default(0)
+  likes        Int      @default(0)
+  comments     Int      @default(0)
+  shares       Int      @default(0)
+  clicks       Int      @default(0)
+  engagement   Float    @default(0)
+  fetchedAt    DateTime @default(now())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 model Draft {
@@ -45,6 +66,17 @@ model Draft {
   title       String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ContentIdea {
+  id          String   @id @default(cuid())
+  topic       String
+  idea        String
+  tone        String?
+  savedAt     DateTime @default(now())
   
   userId      String
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)

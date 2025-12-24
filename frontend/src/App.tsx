@@ -8,6 +8,8 @@ import Calendar from './pages/Calendar';
 import Drafts from './pages/Drafts';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Analytics from './pages/Analytics';
+import IdeaGenerator from './pages/IdeaGenerator';
 
 function App() {
   return (
@@ -27,9 +29,11 @@ function App() {
       >
         <Route index element={<Navigate to="/dashboard" replace />} />
         <Route path="dashboard" element={<Dashboard />} />
+        <Route path="analytics" element={<Analytics />} />
         <Route path="templates" element={<Templates />} />
         <Route path="create" element={<Create />} />
         <Route path="create/:templateId" element={<Create />} />
+        <Route path="ideas" element={<IdeaGenerator />} />
         <Route path="calendar" element={<Calendar />} />
         <Route path="drafts" element={<Drafts />} />
       </Route>
