@@ -24,18 +24,38 @@ async function apiRequest<T>(
         (headers as Record<string, string>)['Authorization'] = `Bearer ${token}`;
     }
 
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-        ...options,
-        headers,
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-        throw new Error(data.error || 'API request failed');
+    let response: Response;
+    try {
+        response = await fetch(`${API_BASE_URL}${endpoint}`, {
+            ...options,
+            headers,
+        });
+    } catch (error) {
+        // Network error - server is unreachable or CORS issue
+        console.error('Network error:', error);
+        throw new Error(
+            'Unable to connect to the server. Please check your internet connection or try again later.'
+        );
     }
 
-    return data;
+    let data: Record<string, unknown>;
+    try {
+        data = await response.json();
+    } catch {
+        // Server returned non-JSON response
+        throw new Error('Server returned an invalid response');
+    }
+
+    if (!response.ok) {
+        const errorMessage = typeof data.error === 'string' 
+            ? data.error 
+            : Array.isArray(data.error) 
+                ? data.error.map((e: { message?: string }) => e.message || 'Validation error').join(', ')
+                : 'API request failed';
+        throw new Error(errorMessage);
+    }
+
+    return data as T;
 }
 
 // ============ AI Endpoints ============

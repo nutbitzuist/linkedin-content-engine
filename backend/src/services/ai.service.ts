@@ -1,21 +1,22 @@
 import Anthropic from '@anthropic-ai/sdk';
+import type { ContentBlock } from '@anthropic-ai/sdk/resources/messages';
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
-export type RewriteMode = 
-  | 'template_apply' 
-  | 'hook_enhance' 
-  | 'full_rewrite' 
-  | 'tone_adjust' 
+export type RewriteMode =
+  | 'template_apply'
+  | 'hook_enhance'
+  | 'full_rewrite'
+  | 'tone_adjust'
   | 'length_optimize';
 
-export type ToneStyle = 
-  | 'authoritative' 
-  | 'conversational' 
-  | 'vulnerable' 
-  | 'provocative' 
+export type ToneStyle =
+  | 'authoritative'
+  | 'conversational'
+  | 'vulnerable'
+  | 'provocative'
   | 'inspirational';
 
 interface RewriteOptions {
@@ -185,7 +186,7 @@ Return ONLY the condensed post, no explanations.`;
       system: systemPrompt,
     });
 
-    const textContent = response.content.find(block => block.type === 'text');
+    const textContent = response.content.find((block: ContentBlock) => block.type === 'text');
     return textContent ? textContent.text : '';
   } catch (error) {
     console.error('AI rewrite error:', error);
@@ -218,9 +219,9 @@ Format as a numbered list.`;
       system: systemPrompt,
     });
 
-    const textContent = response.content.find(block => block.type === 'text');
+    const textContent = response.content.find((block: ContentBlock) => block.type === 'text');
     if (!textContent) return [];
-    
+
     // Parse the response into individual ideas
     const ideas = textContent.text.split(/\d+\.\s+/).filter(Boolean);
     return ideas.slice(0, count);
